@@ -1,9 +1,14 @@
 import os
 import shutil
+import sys
 
 from generate_page import generate_page
 from generate_pages_recursive import generate_pages_recursive
 
+if len(sys.argv) > 1:
+    basepath = sys.argv[1]
+else:
+    basepath = "/"
 
 def copy_dir(src, dst):
     os.makedirs(dst, exist_ok=True)
@@ -19,17 +24,15 @@ def copy_dir(src, dst):
             print(f"Copied {src_path} -> {dst_path}")
 
 
-def copy_static(src="static", dst="public"):
+def copy_static(src="static", dst="docs"):
     if os.path.exists(dst):
         shutil.rmtree(dst)
     copy_dir(src, dst)
 
 
 def main():
-    # Copy static assets into public/
-    copy_static("static", "public")
-    # Generate pages for all markdown files under content/
-    generate_pages_recursive("content", "template.html", "public")
+    copy_static("static", "docs")
+    generate_pages_recursive("content", "template.html", "docs", basepath)
 
 
 if __name__ == "__main__":
